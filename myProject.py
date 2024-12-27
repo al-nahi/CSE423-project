@@ -306,14 +306,7 @@ def animate():
         # Draw game elements
         draw_platform()
         draw_stickman()
-        
-        # Draw obstacles
-        for thorn_ in thorn_obstacle:
-            draw_obsticle_thorn(thorn_[0], thorn_[1])
-        
-        for halfCircle in halfCircle_obstacle:
-            circledrawingAlgo_half(halfCircle[0], halfCircle[1], 30)
-            
+
         # Draw control buttons
         draw_left_arrow()
         if paused:
@@ -322,9 +315,17 @@ def animate():
             draw_pause_icon()
         draw_cross()
         
+        # Draw obstacles
+        for thorn_ in thorn_obstacle:
+            draw_obsticle_thorn(thorn_[0], thorn_[1])
+        
+        glColor3f(1, 1, 1)
+        for halfCircle in halfCircle_obstacle:
+            circledrawingAlgo_half(halfCircle[0], halfCircle[1], 30)
+        
         # Draw score
         glColor3f(1.0, 1.0, 1.0)
-        draw_text(f"Score: {score}", 10, 540)
+        draw_text(f"Score: {score}", 10, 500)
         
     if game_over:
         # Game Over Screen
@@ -359,10 +360,17 @@ def timer(value):
                 halfCircle_obstacle.remove(halfCircle)
 
         # Check for collisions
+        # For thorns
         for thorn_ in thorn_obstacle:
             if math.sqrt((thorn_[0] - stickman_x)** 2) <= (10 + 10) and math.sqrt((thorn_[1] - (stickman_y+jump_height)) ** 2) <= (50 + 30):
                 game_over = True
                 break
+
+        #For half circles
+        for halfCircle in halfCircle_obstacle:
+            if  math.sqrt((halfCircle[0] - stickman_x)** 2) <= (10 + 20) and math.sqrt((halfCircle[1] - (stickman_y+jump_height)) ** 2) <= (50 + 20):
+                game_over = True  
+                break       
 
         # Spawn thorns
         if random.random() < thorn_wait_time:
@@ -446,34 +454,34 @@ def mouse_click(button, state, x, y):
             
         if game_state == "MENU":
             # Level selection only works in menu state
-            if 25 <= x <= 85 and 520 <= y <= 530:
+            if 25 <= x <= 85 and 510 <= y <= 530:
                 current_level = "EASY"
                 easy_mode()
                 game_state = "PLAYING"
                 print("Playing in easy mode")
-            elif 260 <= x <= 320 and 520 <= y <= 530:
+            elif 260 <= x <= 320 and 510 <= y <= 530:
                 current_level = "MEDIUM"
                 medium_mode()
                 game_state = "PLAYING"
                 print("Playing in medium mode")
-            elif 495 <= x <= 555 and 520 <= y <= 530:
+            elif 495 <= x <= 555 and 510 <= y <= 530:
                 current_level = "HARD"
                 hard_mode()
                 game_state = "PLAYING"
                 print("Playing in hard mode")
 
-        # These controls always work
-        if 25 <= x <= 75 and 550 <= y <= 600:
-            game_state = "MENU"
-            restart_game()
-            print("Starting Over")
-        elif 275 <= x <= 325 and 550 <= y <= 600:
-            if game_state == "PLAYING":
-                paused = not paused
-        elif 500 <= x <= 550 and 550 <= y <= 600:
-            game_over = True
-            print(f"Goodbye. Final Score: {score}")
-            glutLeaveMainLoop()
+        if game_state == "PLAYING":
+            if 25 <= x <= 75 and 550 <= y <= 600:
+                game_state = "MENU"
+                restart_game()
+                print("Starting Over")
+            elif 275 <= x <= 325 and 550 <= y <= 600:
+                if game_state == "PLAYING":
+                    paused = not paused
+            elif 500 <= x <= 550 and 550 <= y <= 600:
+                game_over = True
+                print(f"Goodbye. Final Score: {score}")
+                glutLeaveMainLoop()
 
     glutPostRedisplay()
 
