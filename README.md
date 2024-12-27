@@ -8,3 +8,5 @@ Rule -
 5. Has pause, restart and cancel buttons.
 
 That's all.
+
+Special note - use the file after extracting the opengl zip file and in the same where the opengl file is extracted.
