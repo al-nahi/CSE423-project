@@ -9,4 +9,4 @@ Rule -
 
 That's all.
 
-Special note - use the file after extracting the opengl zip file and in the same where the opengl file is extracted.
+Special note - use the file after extracting the opengl zip file and in the same folder where the opengl file is extracted.
