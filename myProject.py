@@ -313,20 +313,30 @@ def draw_bird(x, y):
     
     # Draw wings using lines
     glColor3f(0.4, 0.2, 0.1)  # Darker brown
+    glPointSize(2)
+    glBegin(GL_POINTS)
+
     # Left wing
     linedrawingalgo(x-15, y, x-5, y+15)
     linedrawingalgo(x-5, y+15, x, y)
     # Right wing
     linedrawingalgo(x+15, y, x+5, y+15)
     linedrawingalgo(x+5, y+15, x, y)
-    
+
+    glEnd()
+
     # Draw head
     glColor3f(0.6, 0.3, 0.1)
     circledrawingAlgo(x+15, y+5, 8)
     
     # Draw beak
     glColor3f(1.0, 0.7, 0.0)  # Orange
+    glPointSize(2)
+    glBegin(GL_POINTS)
+
     linedrawingalgo(x+20, y+5, x+28, y+5)
+
+    glEnd()
 
 def draw_cloud(x, y):
     glColor3f(0.529, 0.808, 0.922)  # Sky blue color
