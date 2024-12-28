@@ -279,6 +279,8 @@ def draw_stickman():
         # Legs (bent position)
         linedrawingalgo(stickman_x + 8, stickman_y - 50 + jump_height, stickman_x, stickman_y - 35 + jump_height)
         linedrawingalgo(stickman_x - 8, stickman_y - 50 + jump_height, stickman_x, stickman_y - 35 + jump_height)
+
+        glEnd()
         
     else:
         # Normal standing position (existing code)
@@ -297,7 +299,7 @@ def draw_stickman():
         linedrawingalgo(stickman_x - 4, stickman_y - 50 + jump_height, stickman_x, stickman_y - 30 + jump_height)
         linedrawingalgo(stickman_x + 4, stickman_y - 50 + jump_height, stickman_x, stickman_y - 30 + jump_height)
     
-    glEnd()
+        glEnd()
 
 def draw_text(text, x, y):
     glRasterPos2f(x, y)
