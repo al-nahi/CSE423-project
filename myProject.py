@@ -460,6 +460,7 @@ def timer(value):
         if jump:
             jump_height += jump_speed
             if jump_height > jump_limit:
+                jump_height = jump_limit
                 jump = False
         else:
             if jump_height > 0:
@@ -487,7 +488,7 @@ def timer(value):
             # Bird spawns at stickman's head height (stickman_y + jump_height)
             bird_obstacle.append([
                 random.randint(620, 720),  # Random x position only
-                stickman_y +25
+                stickman_y +22
             ])
 
     glutTimerFunc(24, timer, 0)
