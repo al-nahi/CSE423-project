@@ -436,17 +436,41 @@ def timer(value):
                 halfCircle_obstacle.remove(halfCircle)
 
         # Check for collisions
-        # For thorns
-        for thorn_ in thorn_obstacle:
-            if math.sqrt((thorn_[0] - stickman_x)** 2) <= (10 + 10) and math.sqrt((thorn_[1] - (stickman_y+jump_height)) ** 2) <= (50 + 30):
+        def check_collision(obj1_x, obj1_y, obj1_width, obj1_height, obj2_x, obj2_y, obj2_width, obj2_height):
+            return (obj1_x < obj2_x + obj2_width and
+                    obj1_x + obj1_width > obj2_x and
+                    obj1_y < obj2_y + obj2_height and
+                    obj1_y + obj1_height > obj2_y)
+
+        # For birds
+        for bird in bird_obstacle:
+            # Bird dimensions: 30x30 pixels, Stickman: 20x50 pixels
+            if check_collision(
+                bird[0], bird[1], 30, 30,  # Bird box
+                stickman_x - 10, stickman_y + jump_height - 25, 20, 50  # Stickman box
+            ):
                 game_over = True
                 break
 
-        #For half circles
+        # For thorns
+        for thorn in thorn_obstacle:
+            # Thorn dimensions: 20x40 pixels
+            if check_collision(
+                thorn[0], thorn[1], 20, 40,  # Thorn box
+                stickman_x - 10, stickman_y + jump_height - 25, 20, 50  # Stickman box
+            ):
+                game_over = True
+                break
+
+        # For half circles
         for halfCircle in halfCircle_obstacle:
-            if  math.sqrt((halfCircle[0] - stickman_x)** 2) <= (10 + 20) and math.sqrt((halfCircle[1] - (stickman_y+jump_height)) ** 2) <= (50 + 20):
-                game_over = True  
-                break       
+            # Half circle dimensions: 40x40 pixels
+            if check_collision(
+                halfCircle[0], halfCircle[1], 40, 40,  # Half circle box
+                stickman_x - 10, stickman_y + jump_height - 25, 20, 50  # Stickman box
+            ):
+                game_over = True
+                break
 
         # Spawn thorns
         if random.random() < thorn_wait_time:
@@ -478,8 +502,9 @@ def timer(value):
         
         # Check bird collisions
         for bird in bird_obstacle:
-            if math.sqrt((bird[0] - stickman_x)**2) <= (10 + 8) and \
-               math.sqrt((bird[1] - (stickman_y+jump_height))**2) <= (10 + 10):
+            # Using more precise collision box sizes
+            if (abs(bird[0] - stickman_x) <= 15 and  # Wider horizontal collision
+                abs(bird[1] - (stickman_y + jump_height)) <= 15):  # Taller vertical collision 
                 game_over = True
                 break
         
@@ -488,7 +513,7 @@ def timer(value):
             # Bird spawns at stickman's head height (stickman_y + jump_height)
             bird_obstacle.append([
                 random.randint(620, 720),  # Random x position only
-                stickman_y +22
+                stickman_y +25
             ])
 
     glutTimerFunc(24, timer, 0)
