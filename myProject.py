@@ -26,6 +26,8 @@ jump_limit = 70
 jump_speed = 5
 game_state = "MENU"  # States: "MENU", "PLAYING", "GAME_OVER"
 current_level = None  # Will store the currently selected level
+global stickman_crouching
+stickman_crouching = False
 
 
 def circledrawingAlgo(x_center, y_center, radius):
@@ -255,21 +257,43 @@ def draw_obsticle_thorn(x,y):
     glEnd()
 
 def draw_stickman():
-    # Head
-    circledrawingAlgo(stickman_x, stickman_y + jump_height, stickman_head_radius)
+    global stickman_crouching
+    
+    if stickman_crouching:
+        # Crouching position - draw shorter stickman
+        # Head (lower position)
+        circledrawingAlgo(stickman_x, stickman_y - 10 + jump_height, stickman_head_radius)
 
-    glColor3f(0.2, 0.6, 0.85)
-    glPointSize(2)
-    glBegin(GL_POINTS)
+        glColor3f(0.2, 0.6, 0.85)
+        glPointSize(2)
+        glBegin(GL_POINTS)
 
-    # Body
-    linedrawingalgo(stickman_x, stickman_y - 10 + jump_height, stickman_x, stickman_y - 30 + jump_height)
-    # Arms
-    linedrawingalgo(stickman_x + 10, stickman_y - 26 + jump_height, stickman_x, stickman_y - 20 + jump_height)
-    linedrawingalgo(stickman_x + 10, stickman_y - 20 + jump_height, stickman_x, stickman_y - 20 + jump_height)
-    # Legs
-    linedrawingalgo(stickman_x - 4, stickman_y - 50 + jump_height, stickman_x, stickman_y - 30 + jump_height)
-    linedrawingalgo(stickman_x + 4, stickman_y - 50 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        # Body (shorter)
+        linedrawingalgo(stickman_x, stickman_y - 20 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        # Arms (lower position)
+        linedrawingalgo(stickman_x + 8, stickman_y - 30 + jump_height, stickman_x, stickman_y - 25 + jump_height)
+        linedrawingalgo(stickman_x - 8, stickman_y - 30 + jump_height, stickman_x, stickman_y - 25 + jump_height)
+        # Legs (bent position)
+        linedrawingalgo(stickman_x + 6, stickman_y - 40 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        linedrawingalgo(stickman_x - 6, stickman_y - 40 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        
+    else:
+        # Normal standing position (existing code)
+        circledrawingAlgo(stickman_x, stickman_y + jump_height, stickman_head_radius)
+
+        glColor3f(0.2, 0.6, 0.85)
+        glPointSize(2)
+        glBegin(GL_POINTS)
+
+        # Body
+        linedrawingalgo(stickman_x, stickman_y - 10 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        # Arms
+        linedrawingalgo(stickman_x + 10, stickman_y - 26 + jump_height, stickman_x, stickman_y - 20 + jump_height)
+        linedrawingalgo(stickman_x - 10, stickman_y - 26 + jump_height, stickman_x, stickman_y - 20 + jump_height)
+        # Legs
+        linedrawingalgo(stickman_x - 4, stickman_y - 50 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        linedrawingalgo(stickman_x + 4, stickman_y - 50 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+    
     glEnd()
 
 def draw_text(text, x, y):
@@ -398,21 +422,31 @@ def timer(value):
 
 # Keyboard Function
 def keyboard(key, x, y):
-    global game_over, paused, jump
-
-    if key == b' ' and not game_over and not paused and not jump:
+    global jump_height, jumping, stickman_crouching, game_over, paused, jump
+    if key == b'x':  
+        stickman_crouching = True
+    elif key == b' ' and not game_over and not paused and not jump:
         jump = True
-        
+    else:
+        stickman_crouching = False   
+    glutPostRedisplay()
+
+def keyboard_up(key, x, y):
+    global stickman_crouching
+    if key == b'x':  
+        stickman_crouching = False
+    
     glutPostRedisplay()
         
 
 # Restart Game
 def restart_game():
-    global thorn_obstacle, halfCircle_obstacle, score, game_over
+    global thorn_obstacle, halfCircle_obstacle, score, game_over, stickman_crouching
     thorn_obstacle = []
     halfCircle_obstacle = []
     score = 0
     game_over = False
+    stickman_crouching = False
 
 # Easy mode
 def easy_mode():
@@ -500,6 +534,7 @@ glutInitWindowSize(window_width, window_height)
 glutCreateWindow(b'Stickman Obstacle Jumping')
 glutDisplayFunc(animate)
 glutKeyboardFunc(keyboard)
+glutKeyboardUpFunc(keyboard_up)
 glutMouseFunc(mouse_click)
 glutTimerFunc(0, timer, 0)
 initialize()
