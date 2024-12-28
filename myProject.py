@@ -28,6 +28,9 @@ game_state = "MENU"  # States: "MENU", "PLAYING", "GAME_OVER"
 current_level = None  # Will store the currently selected level
 global stickman_crouching
 stickman_crouching = False
+global bird_obstacle
+bird_obstacle = []  
+bird_wait_time = 0.005
 
 
 def circledrawingAlgo(x_center, y_center, radius):
@@ -301,6 +304,52 @@ def draw_text(text, x, y):
     for character in text:
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(character))
 
+def draw_bird(x, y):
+    # Draw body
+    glColor3f(0.6, 0.3, 0.1)  # Brown color
+    circledrawingAlgo(x, y, 15)  # Body
+    
+    # Draw wings using lines
+    glColor3f(0.4, 0.2, 0.1)  # Darker brown
+    # Left wing
+    linedrawingalgo(x-15, y, x-5, y+15)
+    linedrawingalgo(x-5, y+15, x, y)
+    # Right wing
+    linedrawingalgo(x+15, y, x+5, y+15)
+    linedrawingalgo(x+5, y+15, x, y)
+    
+    # Draw head
+    glColor3f(0.6, 0.3, 0.1)
+    circledrawingAlgo(x+15, y+5, 8)
+    
+    # Draw beak
+    glColor3f(1.0, 0.7, 0.0)  # Orange
+    linedrawingalgo(x+20, y+5, x+28, y+5)
+
+# def draw_bird(x, y):
+#     glPushMatrix()
+#     glTranslatef(x, y, 0)  # Move the bird to the specified position
+
+#     # Set the color for the bird
+#     glColor3f(1.0, 0.5, 0.0)  # Example color: orange
+
+#     # Draw the bird's body using a triangle
+#     glBegin(GL_TRIANGLES)
+#     glVertex2f(-0.1, 0.0)  # Left vertex
+#     glVertex2f(0.1, 0.0)   # Right vertex
+#     glVertex2f(0.0, 0.2)   # Top vertex
+#     glEnd()
+
+#     # Draw the bird's wings using lines
+#     glBegin(GL_LINES)
+#     glVertex2f(-0.1, 0.0)
+#     glVertex2f(-0.2, 0.1)
+#     glVertex2f(0.1, 0.0)
+#     glVertex2f(0.2, 0.1)
+#     glEnd()
+
+#     glPopMatrix()
+
 def animate():
     global game_over, paused, game_state
     glClear(GL_COLOR_BUFFER_BIT)
@@ -346,6 +395,9 @@ def animate():
         glColor3f(1, 1, 1)
         for halfCircle in halfCircle_obstacle:
             circledrawingAlgo_half(halfCircle[0], halfCircle[1], 30)
+
+        for bird in bird_obstacle:
+            draw_bird(bird[0], bird[1])
         
         # Draw score
         glColor3f(1.0, 1.0, 1.0)
@@ -365,7 +417,7 @@ def animate():
 
 # Timer Function
 def timer(value):
-    global thorn_obstacle, halfCircle_obstacle, score, game_over, stickman_y, stickman_x, jump, jump_height, jump_limit, jump_speed, game_state
+    global thorn_obstacle, halfCircle_obstacle, bird_obstacle, score, game_over, stickman_y, stickman_x, jump, jump_height, jump_limit, jump_speed, game_state
 
     # Only update game logic if we're in PLAYING state
     if game_state == "PLAYING" and not game_over and not paused:
@@ -416,6 +468,28 @@ def timer(value):
         # Only increment score while playing
         score += 1
 
+        # Update bird positions
+        for bird in bird_obstacle:
+            if bird[0] > 5:
+                bird[0] = bird[0] - speed
+            else:
+                bird_obstacle.remove(bird)
+        
+        # Check bird collisions
+        for bird in bird_obstacle:
+            if math.sqrt((bird[0] - stickman_x)**2) <= (10 + 8) and \
+               math.sqrt((bird[1] - (stickman_y+jump_height))**2) <= (10 + 10):
+                game_over = True
+                break
+        
+        # Spawn birds
+        if random.random() < bird_wait_time:
+            # Bird spawns at stickman's head height (stickman_y + jump_height)
+            bird_obstacle.append([
+                random.randint(620, 720),  # Random x position only
+                stickman_y +25
+            ])
+
     glutTimerFunc(24, timer, 0)
     glutPostRedisplay()
 
@@ -441,9 +515,10 @@ def keyboard_up(key, x, y):
 
 # Restart Game
 def restart_game():
-    global thorn_obstacle, halfCircle_obstacle, score, game_over, stickman_crouching
+    global thorn_obstacle, halfCircle_obstacle, bird_obstacle, score, game_over, stickman_crouching
     thorn_obstacle = []
     halfCircle_obstacle = []
+    bird_obstacle = []
     score = 0
     game_over = False
     stickman_crouching = False
