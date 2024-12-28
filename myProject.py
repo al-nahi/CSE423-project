@@ -31,6 +31,8 @@ stickman_crouching = False
 global bird_obstacle
 bird_obstacle = []  
 bird_wait_time = 0.005
+cloud_obstacle = []  # Store cloud positions
+cloud_wait_time = 0.003  # Adjust probability as needed
 
 
 def circledrawingAlgo(x_center, y_center, radius):
@@ -326,29 +328,11 @@ def draw_bird(x, y):
     glColor3f(1.0, 0.7, 0.0)  # Orange
     linedrawingalgo(x+20, y+5, x+28, y+5)
 
-# def draw_bird(x, y):
-#     glPushMatrix()
-#     glTranslatef(x, y, 0)  # Move the bird to the specified position
-
-#     # Set the color for the bird
-#     glColor3f(1.0, 0.5, 0.0)  # Example color: orange
-
-#     # Draw the bird's body using a triangle
-#     glBegin(GL_TRIANGLES)
-#     glVertex2f(-0.1, 0.0)  # Left vertex
-#     glVertex2f(0.1, 0.0)   # Right vertex
-#     glVertex2f(0.0, 0.2)   # Top vertex
-#     glEnd()
-
-#     # Draw the bird's wings using lines
-#     glBegin(GL_LINES)
-#     glVertex2f(-0.1, 0.0)
-#     glVertex2f(-0.2, 0.1)
-#     glVertex2f(0.1, 0.0)
-#     glVertex2f(0.2, 0.1)
-#     glEnd()
-
-#     glPopMatrix()
+def draw_cloud(x, y):
+    glColor3f(0.529, 0.808, 0.922)  # Sky blue color
+    # Draw two overlapping circles to create cloud shape
+    circledrawingAlgo(x, y, 20)  # First circle
+    circledrawingAlgo(x + 25, y, 20)  # Second circle slightly to the right
 
 def animate():
     global game_over, paused, game_state
@@ -358,11 +342,6 @@ def animate():
         # Draw title
         glColor3f(1.0, 1.0, 1.0)  # White color for title
         draw_text("Stickman Obstacle Jumping Game", window_width//2 - 150, window_height-300)
-        # title_text = "Stickman Obstacle Jumping Game"
-        # x = window_width//2 - (len(title_text) * 4)
-        # y = window_height - 100
-        # draw_text(title_text, x, y)
-        # Draw level selection buttons and labels
         draw_easy_button()
         glColor3f(0.0, 1.0, 0.0)  # Green color for Easy text
         draw_text("Easy", 35, 550)
@@ -398,6 +377,10 @@ def animate():
 
         for bird in bird_obstacle:
             draw_bird(bird[0], bird[1])
+        
+        # Draw clouds
+        for cloud in cloud_obstacle:
+            draw_cloud(cloud[0], cloud[1])
         
         # Draw score
         glColor3f(1.0, 1.0, 1.0)
@@ -514,6 +497,20 @@ def timer(value):
             bird_obstacle.append([
                 random.randint(620, 720),  # Random x position only
                 stickman_y +25
+            ])
+
+        # Update cloud positions
+        for cloud in cloud_obstacle:
+            if cloud[0] > -50:  # Allow clouds to move fully off screen
+                cloud[0] = cloud[0] - (speed * 0.5)  # Move clouds slower than obstacles
+            else:
+                cloud_obstacle.remove(cloud)
+
+        # Spawn clouds
+        if random.random() < cloud_wait_time:
+            cloud_obstacle.append([
+                random.randint(620, 720),  # Random x position
+                300  # Fixed y position at height 100
             ])
 
     glutTimerFunc(24, timer, 0)
