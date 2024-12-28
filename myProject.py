@@ -534,8 +534,7 @@ def keyboard(key, x, y):
         stickman_crouching = True
     elif key == b' ' and not game_over and not paused and not jump:
         jump = True
-    else:
-        stickman_crouching = False   
+        
     glutPostRedisplay()
 
 def keyboard_up(key, x, y):
