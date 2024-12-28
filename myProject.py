@@ -270,15 +270,15 @@ def draw_stickman():
         glColor3f(0.2, 0.6, 0.85)
         glPointSize(2)
         glBegin(GL_POINTS)
-
+        
         # Body (shorter)
-        linedrawingalgo(stickman_x, stickman_y - 20 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        linedrawingalgo(stickman_x, stickman_y - 20 + jump_height, stickman_x, stickman_y - 35 + jump_height)
         # Arms (lower position)
-        linedrawingalgo(stickman_x + 8, stickman_y - 30 + jump_height, stickman_x, stickman_y - 25 + jump_height)
-        linedrawingalgo(stickman_x - 8, stickman_y - 30 + jump_height, stickman_x, stickman_y - 25 + jump_height)
+        linedrawingalgo(stickman_x + 8, stickman_y - 32 + jump_height, stickman_x, stickman_y - 26 + jump_height)
+        linedrawingalgo(stickman_x - 8, stickman_y - 32 + jump_height, stickman_x, stickman_y - 26 + jump_height)
         # Legs (bent position)
-        linedrawingalgo(stickman_x + 6, stickman_y - 40 + jump_height, stickman_x, stickman_y - 30 + jump_height)
-        linedrawingalgo(stickman_x - 6, stickman_y - 40 + jump_height, stickman_x, stickman_y - 30 + jump_height)
+        linedrawingalgo(stickman_x + 8, stickman_y - 50 + jump_height, stickman_x, stickman_y - 35 + jump_height)
+        linedrawingalgo(stickman_x - 8, stickman_y - 50 + jump_height, stickman_x, stickman_y - 35 + jump_height)
         
     else:
         # Normal standing position (existing code)
