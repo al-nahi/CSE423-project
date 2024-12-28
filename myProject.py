@@ -26,9 +26,7 @@ jump_limit = 70
 jump_speed = 5
 game_state = "MENU"  # States: "MENU", "PLAYING", "GAME_OVER"
 current_level = None  # Will store the currently selected level
-global stickman_crouching
 stickman_crouching = False
-global bird_obstacle
 bird_obstacle = []  
 bird_wait_time = 0.005
 cloud_obstacle = []  # Store cloud positions
