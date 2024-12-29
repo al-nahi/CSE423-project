@@ -529,7 +529,7 @@ def timer(value):
 
 # Keyboard Function
 def keyboard(key, x, y):
-    global jump_height, jumping, stickman_crouching, game_over, paused, jump
+    global jump_height, stickman_crouching, game_over, paused, jump
     if key == b'x':  
         stickman_crouching = True
     elif key == b' ' and not game_over and not paused and not jump:
