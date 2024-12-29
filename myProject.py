@@ -28,7 +28,7 @@ game_state = "MENU"  # States: "MENU", "PLAYING", "GAME_OVER"
 current_level = None  # Will store the currently selected level
 stickman_crouching = False
 bird_obstacle = []  
-bird_wait_time = 0.005
+bird_wait_time = 0.003
 cloud_obstacle = []  # Store cloud positions
 cloud_wait_time = 0.003  # Adjust probability as needed
 
@@ -557,27 +557,30 @@ def restart_game():
 
 # Easy mode
 def easy_mode():
-    global thorn_wait_time, halfCircle_wait_time, speed
+    global thorn_wait_time, halfCircle_wait_time, speed, bird_wait_time
     thorn_wait_time = 0.01
     halfCircle_wait_time = 0.001
+    bird_wait_time = 0.003
     speed = 5
     restart_game()
 
 
 # Medium mode
 def medium_mode():
-    global thorn_wait_time, halfCircle_wait_time, speed
+    global thorn_wait_time, halfCircle_wait_time, speed, bird_wait_time
     thorn_wait_time = 0.02
     halfCircle_wait_time = 0.002
+    bird_wait_time = 0.004
     speed = 8
     restart_game()
 
 
 # Hard mode
 def hard_mode():
-    global thorn_wait_time, halfCircle_wait_time, speed
+    global thorn_wait_time, halfCircle_wait_time, speed, bird_wait_time
     thorn_wait_time = 0.03
     halfCircle_wait_time = 0.003
+    bird_wait_time = 0.005
     speed = 10
     restart_game()
 
